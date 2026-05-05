@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sincronização de Berkeley - Sistemas Distribuídos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-indigo-900 p-2.5 min-h-screen">
+    <div class="w-full">
+        <div class="flex flex-col gap-4 bg-white shadow-md p-5 rounded-lg">
+            <div>
+                <h2 class="mb-3 pb-2 border-indigo-500 border-b-2 font-semibold text-gray-800 text-base">Criar Servidor
+                </h2>
+                <div class="bg-gray-50 p-3 border border-gray-300 rounded">
+                    <div class="flex flex-col gap-1.5 mb-2.5">
+                        <label for="serverTime" class="font-semibold text-gray-600 text-xs">Hora Local do Servidor
+                            (HH:MM)</label>
+                        <input type="text" id="serverTime" placeholder="14:30" maxlength="5"
+                            class="px-2.5 py-2 border border-gray-300 focus:border-indigo-500 rounded focus:outline-none text-xs">
+                    </div>
+                    <button onclick="setServer()"
+                        class="bg-indigo-500 hover:bg-indigo-600 px-4 py-2.5 rounded w-full font-semibold text-white text-xs transition-colors">Definir
+                        Servidor</button>
+                </div>
+            </div>
+
+            <h2 class="mt-3 pb-2 border-indigo-500 border-b-2 font-semibold text-gray-800 text-base">Criar Clientes
+            </h2>
+            <div class="gap-4 grid grid-cols-1 md:grid-cols-3">
+                <div class="bg-white p-2.5 border border-gray-300 rounded">
+                    <h4 class="mb-2 font-semibold text-indigo-500 text-xs">Cliente 1</h4>
+                    <div class="flex flex-col gap-1.5 mb-2.5">
+                        <label for="client1Time" class="font-semibold text-gray-600 text-xs">Hora Local</label>
+                        <input type="text" id="client1Time" placeholder="14:35" maxlength="5"
+                            class="px-2.5 py-2 border border-gray-300 focus:border-indigo-500 rounded focus:outline-none text-xs">
+                    </div>
+                    <div class="flex flex-col gap-1.5">
+                        <label for="client1SendTime" class="font-semibold text-gray-600 text-xs">Hora de Envio</label>
+                        <input type="text" id="client1SendTime" placeholder="14:32" maxlength="5"
+                            class="px-2.5 py-2 border border-gray-300 focus:border-indigo-500 rounded focus:outline-none text-xs">
+                    </div>
+                </div>
+
+                <div class="bg-white p-2.5 border border-gray-300 rounded">
+                    <h4 class="mb-2 font-semibold text-indigo-500 text-xs">Cliente 2</h4>
+                    <div class="flex flex-col gap-1.5 mb-2.5">
+                        <label for="client2Time" class="font-semibold text-gray-600 text-xs">Hora Local</label>
+                        <input type="text" id="client2Time" placeholder="14:28" maxlength="5"
+                            class="px-2.5 py-2 border border-gray-300 focus:border-indigo-500 rounded focus:outline-none text-xs">
+                    </div>
+                    <div class="flex flex-col gap-1.5">
+                        <label for="client2SendTime" class="font-semibold text-gray-600 text-xs">Hora de Envio</label>
+                        <input type="text" id="client2SendTime" placeholder="14:34" maxlength="5"
+                            class="px-2.5 py-2 border border-gray-300 focus:border-indigo-500 rounded focus:outline-none text-xs">
+                    </div>
+                </div>
+
+                <div class="bg-white p-2.5 border border-gray-300 rounded">
+                    <h4 class="mb-2 font-semibold text-indigo-500 text-xs">Cliente 3</h4>
+                    <div class="flex flex-col gap-1.5 mb-2.5">
+                        <label for="client3Time" class="font-semibold text-gray-600 text-xs">Hora Local</label>
+                        <input type="text" id="client3Time" placeholder="14:32" maxlength="5"
+                            class="px-2.5 py-2 border border-gray-300 focus:border-indigo-500 rounded focus:outline-none text-xs">
+                    </div>
+                    <div class="flex flex-col gap-1.5">
+                        <label for="client3SendTime" class="font-semibold text-gray-600 text-xs">Hora de Envio</label>
+                        <input type="text" id="client3SendTime" placeholder="14:30" maxlength="5"
+                            class="px-2.5 py-2 border border-gray-300 focus:border-indigo-500 rounded focus:outline-none text-xs">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-2.5 mt-2.5">
+            <div class="flex flex-col justify-between bg-white shadow-md p-5 rounded-lg">
+                <div>
+                    <div class="bg-indigo-50 mb-4 p-3 border-indigo-500 border-l-4 rounded">
+                        <h3 class="mb-2 font-semibold text-indigo-600 text-sm">Dados do Servidor</h3>
+                        <div class="flex justify-between items-center pb-1.5 border-gray-300 border-b text-xs">
+                            <span class="font-semibold text-gray-600">Hora Local:</span>
+                            <span id="displayServerTime" class="font-mono font-bold text-gray-800 text-xs">--:--</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-1.5 text-xs">
+                            <span class="font-semibold text-gray-600">Status:</span>
+                            <span id="serverStatus" class="font-mono font-bold text-gray-800 text-xs">Não
+                                definido</span>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="sincronizar()"
+                    class="bg-indigo-500 hover:bg-indigo-600 px-4 py-2.5 rounded w-full font-semibold text-white text-xs transition-colors">Sincronizar</button>
+            </div>
+
+            <div id="resultsPanel" class="hidden gap-4 grid grid-cols-1 bg-white shadow-md p-5 rounded-lg">
+                <h2 class="pb-2 border-indigo-500 border-b-2 font-semibold text-gray-800 text-base">Resultados da
+                    Sincronização</h2>
+
+                <div class="gap-4 grid grid-cols-1 md:grid-cols-4">
+                    <div class="bg-emerald-50 p-3 border-emerald-500 border-l-4 rounded">
+                        <h3 class="mb-2 font-semibold text-emerald-600 text-sm">Horas Locais Original</h3>
+                        <div class="flex justify-between items-center pb-1 border-gray-200 border-b text-xs"><span
+                                class="font-semibold text-gray-600">Servidor:</span><span id="resultServerTime"
+                                class="font-mono font-bold text-emerald-600 text-xs">--:--</span></div>
+                        <div class="flex justify-between items-center py-1 border-gray-200 border-b text-xs"><span
+                                class="font-semibold text-gray-600">Cliente 1:</span><span id="resultClient1Time"
+                                class="font-mono font-bold text-emerald-600 text-xs">--:--</span></div>
+                        <div class="flex justify-between items-center py-1 border-gray-200 border-b text-xs"><span
+                                class="font-semibold text-gray-600">Cliente 2:</span><span id="resultClient2Time"
+                                class="font-mono font-bold text-emerald-600 text-xs">--:--</span></div>
+                        <div class="flex justify-between items-center pt-1 text-xs"><span
+                                class="font-semibold text-gray-600">Cliente 3:</span><span id="resultClient3Time"
+                                class="font-mono font-bold text-emerald-600 text-xs">--:--</span></div>
+                    </div>
+
+                    <div class="bg-emerald-50 p-3 border-emerald-500 border-l-4 rounded">
+                        <h3 class="mb-2 font-semibold text-emerald-600 text-sm">Clock Lógico</h3>
+                        <div class="flex justify-between items-center text-xs"><span
+                                class="font-semibold text-gray-600">Hora Média:</span><span id="logicalClock"
+                                class="font-mono font-bold text-emerald-600 text-xs">--:--</span></div>
+                    </div>
+
+                    <div class="bg-emerald-50 p-3 border-emerald-500 border-l-4 rounded">
+                        <h3 class="mb-2 font-semibold text-emerald-600 text-sm">Ajuste do Clock (min)</h3>
+                        <div class="flex justify-between items-center pb-1 text-xs"><span
+                                class="font-semibold text-gray-600">Servidor:</span><span id="adjustServer"
+                                class="font-mono font-bold text-emerald-600 text-xs">-</span></div>
+                        <div class="flex justify-between items-center py-1 text-xs"><span
+                                class="font-semibold text-gray-600">Cliente 1:</span><span id="adjustClient1"
+                                class="font-mono font-bold text-emerald-600 text-xs">-</span></div>
+                        <div class="flex justify-between items-center py-1 text-xs"><span
+                                class="font-semibold text-gray-600">Cliente 2:</span><span id="adjustClient2"
+                                class="font-mono font-bold text-emerald-600 text-xs">-</span></div>
+                        <div class="flex justify-between items-center pt-1 text-xs"><span
+                                class="font-semibold text-gray-600">Cliente 3:</span><span id="adjustClient3"
+                                class="font-mono font-bold text-emerald-600 text-xs">-</span></div>
+                    </div>
+
+                    <div class="bg-emerald-50 p-3 border-emerald-500 border-l-4 rounded">
+                        <h3 class="mb-2 font-semibold text-emerald-600 text-sm">Ordem de Envio</h3>
+                        <ul id="rankingList" class="space-y-1.5">
+                            <li class="py-3 text-gray-400 text-xs text-center">Aguardando sincronização...</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
