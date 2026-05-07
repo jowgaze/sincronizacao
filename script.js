@@ -110,6 +110,37 @@ function sincronizar() {
         rankingList.appendChild(li);
     });
 
+    // Calcular ordem de envio com clock sincronizado
+    const clientsWithAdjust = [
+        { name: 'Cliente 1', time: client1Send, adjust: adjustClient1 },
+        { name: 'Cliente 2', time: client2Send, adjust: adjustClient2 },
+        { name: 'Cliente 3', time: client3Send, adjust: adjustClient3 }
+    ];
+
+    // Calcular tempo sincronizado (tempo de envio + ajuste em minutos)
+    const clientsSyncedTime = clientsWithAdjust.map(client => ({
+        name: client.name,
+        originalTime: client.time,
+        adjust: client.adjust,
+        syncedTime: client.time + client.adjust
+    }));
+
+    // Ordenar pela hora sincronizada
+    clientsSyncedTime.sort((a, b) => a.syncedTime - b.syncedTime);
+
+    const rankingListSynced = document.getElementById('rankingListSynced');
+    rankingListSynced.innerHTML = '';
+    clientsSyncedTime.forEach((client, index) => {
+        const li = document.createElement('li');
+        li.className = 'flex items-center gap-2.5 bg-white border border-emerald-200 p-2 rounded text-xs';
+        li.innerHTML = `
+            <div class="w-6 h-6 flex items-center justify-center rounded-full bg-emerald-500 text-white font-bold text-xs">${index + 1}º</div>
+            <div class="flex-1 text-gray-700 text-xs"><strong>${client.name}</strong></div>
+            <div class="text-gray-600 text-xs"><span class="font-semibold">Sincronizado:</span> ${minutesToTime(client.syncedTime)}</div>
+        `;
+        rankingListSynced.appendChild(li);
+    });
+
     const resultsPanel = document.getElementById('resultsPanel');
     resultsPanel.classList.remove('hidden');
     resultsPanel.classList.add('flex');
